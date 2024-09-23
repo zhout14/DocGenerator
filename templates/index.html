@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side: Form -->
+        <div class="form-section">
+            <h2>Enter Information</h2>
+            <form id="infoForm" method="POST">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" placeholder="Enter your message" required></textarea>
+
+                <button type="button" onclick="generatePreview()">Generate Preview</button>
+                <button type="submit" formaction="/generate">Download Document</button>
+            </form>
+        </div>
+
+        <!-- Right Side: Live Preview -->
+        <div class="preview-section">
+            <h2>Live Document Preview</h2>
+            <div id="previewContent">
+                <p>Fill out the form to see a preview of the document here.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to generate a preview
+        function generatePreview() {
+            const form = document.getElementById('infoForm');
+            const formData = new FormData(form);
+
+            // Send form data to the backend via AJAX for preview
+            fetch('/preview', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update the preview section with the received data
+                document.getElementById('previewContent').innerHTML = data.preview;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
